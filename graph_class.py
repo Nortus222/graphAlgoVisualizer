@@ -67,19 +67,19 @@ class Graph:
         while previous_node[current_node] is not None:
             path.appendleft(current_node)
             current_node = previous_node[current_node]
-        path.appendleft[start_node]
+        path.appendleft(start_node)
 
-        return path
+        return path, distance_from_start[end_node]
 if __name__ == "__main__":
         g = Graph("input_file.txt")
-        path = g.shortest_path("A","G")
-##        pos = nx.spring_layout(g)
-##        nx.draw_networkx_nodes(g, pos, nodelist=g.nodes,
-##                       node_color='b', node_size=600)
-##        nx.draw_networkx_edges(g, pos, edgelist=g.edge_list)
-##        nx.draw_networkx_edges(g, pos, edgelist=path,
-##                       width=8, alpha=0.5, edge_color='r')
-##        plt.show()
+        path = g.shortest_path(1,8)
+        pos = nx.spring_layout(g)
+        nx.draw_networkx_nodes(g, pos, nodelist=g.nodes,
+                       node_color='b', node_size=600)
+        nx.draw_networkx_edges(g, pos, edgelist=g.edge_list)
+        nx.draw_networkx_edges(g, pos, edgelist=path,
+                       width=8, alpha=0.5, edge_color='r')
+        plt.show()
 
 
 
