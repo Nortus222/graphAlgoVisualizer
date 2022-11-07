@@ -72,7 +72,7 @@ class Graph:
         return path, distance_from_start[end_node]
 if __name__ == "__main__":
         g = Graph("input_file.txt")
-        path = g.shortest_path(1,8)
+        path,dist = g.shortest_path(1,8)
         pos = nx.spring_layout(g)
         nx.draw_networkx_nodes(g, pos, nodelist=g.nodes,
                        node_color='b', node_size=600)
