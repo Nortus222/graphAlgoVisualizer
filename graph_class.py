@@ -12,17 +12,21 @@ class Graph:
         edge_list = []
         with open(filename) as fhandle:
             for line in fhandle:
-                edge_from, edge_to= line.strip().split(" ")
+                edge_from, edge_to,weight,*_= line.strip().split(" ")
                 edge_list.append((edge_from,edge_to))
-        g.add_edges_from(edge_list)
+        
         self.nodes = set() # set of all unique nodes
         for edge in edge_list:
             self.nodes.update([edge[0], edge[1]])
-        g.add_nodes_from(self.nodes)
+        
         #dict mapping each node to an unordered set of (neighbor,dist) tuples
         self.adjacency_list = {node: set() for node in self.nodes}
         for edge in edge_list:
             self.adjacency_list[edge[0]].add((edge[1], edge[2]))
+        g.add_edges_from(edge_list)
+        g.add_nodes_from(self.nodes)
+
+
     def shortest_path(self,start_node,end_node):
         
         #all nodes are initially unvisited
@@ -35,7 +39,7 @@ class Graph:
         #initialize prev node, the dict that maps each node to the node it was visited from
         #when the shortest path to it was found.
         
-        previous_node = {node: Node for node in self.nodes}
+        previous_node = {node: None for node in self.nodes}
 
         while unvisited_nodes:
             #set current_node to the unvisited_node with shortest dist calculated
@@ -68,7 +72,7 @@ class Graph:
         return path
 if __name__ == "__main__":
         g = Graph("input_file.txt")
-        path = shortest_path(g,start_node,end_node)
+        path = g.shortest_path("A","G")
 ##        pos = nx.spring_layout(g)
 ##        nx.draw_networkx_nodes(g, pos, nodelist=g.nodes,
 ##                       node_color='b', node_size=600)
