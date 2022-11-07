@@ -16,12 +16,12 @@ class Graph:
                 edge_list.append((edge_from,edge_to,weight))
         g.add_edges_from(edge_list)
         self.nodes = set() # set of all unique nodes
-        for edge in graph_edges:
+        for edge in edge_list:
             self.nodes.update([edge[0], edge[1]])
-        g.add_nodes_from(sef.nodes)
+        g.add_nodes_from(self.nodes)
         #dict mapping each node to an unordered set of (neighbor,dist) tuples
         self.adjacency_list = {node: set() for node in self.nodes}
-        for edge in graph_edges:
+        for edge in edge_list:
             self.adjacency_list[edge[0]].add((edge[1], edge[2]))
     def shortest_path(self,start_node,end_node):
         
