@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 INFINITY = float("inf")
 
-# node list , edgelist, 
+
 class Graph:
     def __init__(self,filename):
         # in file from_node, to_node, weight
