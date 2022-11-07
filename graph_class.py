@@ -8,15 +8,17 @@ INFINITY = float("inf")
 class Graph:
     def __init__(self,filename):
         # in file from_node, to_node, weight
+        g = nx.Graph()
         edge_list = []
         with open(filename) as fhandle:
             for line in fhandle:
                 edge_from, edge_to,weight,*_= line.strip().split(" ")
-                edge_list.append(edge_from,edge_to,float(weight))
-
+                edge_list.append((edge_from,edge_to,weight))
+        g.add_edges_from(edge_list)
         self.nodes = set() # set of all unique nodes
         for edge in graph_edges:
             self.nodes.update([edge[0], edge[1]])
+        g.add_nodes_from(sef.nodes)
         #dict mapping each node to an unordered set of (neighbor,dist) tuples
         self.adjacency_list = {node: set() for node in self.nodes}
         for edge in graph_edges:
@@ -65,11 +67,7 @@ class Graph:
 
         return path
 if __name__ == "__main__":
-        file = "input_file.txt"
-        g = nx.Graph(file)
-
-        start_node = 3
-        end_node   = 6
+        g = Graph("input_file.txt")
         path = shortest_path(g,start_node,end_node)
 ##        pos = nx.spring_layout(g)
 ##        nx.draw_networkx_nodes(g, pos, nodelist=g.nodes,
