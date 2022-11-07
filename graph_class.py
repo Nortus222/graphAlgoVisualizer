@@ -12,8 +12,8 @@ class Graph:
         edge_list = []
         with open(filename) as fhandle:
             for line in fhandle:
-                edge_from, edge_to,weight,*_= line.strip().split(" ")
-                edge_list.append((edge_from,edge_to,weight))
+                edge_from, edge_to= line.strip().split(" ")
+                edge_list.append((edge_from,edge_to))
         g.add_edges_from(edge_list)
         self.nodes = set() # set of all unique nodes
         for edge in edge_list:
