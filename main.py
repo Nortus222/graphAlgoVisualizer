@@ -1,6 +1,8 @@
 import sys
 from PyQt6 import QtWidgets, uic
 
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
 from mainWindow import Ui_MainWindow
 from graphCanvas import GraphCanvas
 
@@ -15,8 +17,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.graphCanvas = GraphCanvas()
         self.gridLayout.addWidget(self.graphCanvas, 0, 0, 0, 0)
 
+        toolbar = NavigationToolbar(self.graphCanvas, self)
+        self.gridLayout.addWidget(toolbar, 1, 0)
+
     def buttonClick(self):
-      self.graphCanvas.createGraph()
+      self.graphCanvas.createGraph('statesCapitals')
       
         
         

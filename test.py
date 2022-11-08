@@ -25,7 +25,8 @@ class Graph(nx.Graph):
         for edge in edge_list:
             self.adjacency_list[edge[0]].add(edge[1])
 
-        self.add_weighted_edges_from(edge_list)
+        # self.add_weighted_edges_from(edge_list)
+        self.add_edges_from(edge_list)
         self.add_nodes_from(nodes)
 
     def parse_file(self, fileName):
@@ -87,7 +88,7 @@ class Graph(nx.Graph):
 
 
 if __name__ == "__main__":
-        g = Graph("input_file.txt")
+        g = Graph("test.txt")
         # path,dist = g.shortest_path(1,8)
         pos = nx.spring_layout(g)
         # nx.draw_networkx_nodes(g, pos, nodelist=g.nodes,
