@@ -2,9 +2,7 @@ import sys
 from PyQt6 import QtWidgets, uic
 
 from mainWindow import Ui_MainWindow
-from graph import GraphCanvas
-
-
+from graphCanvas import GraphCanvas
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
