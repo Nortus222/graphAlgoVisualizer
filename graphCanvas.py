@@ -11,7 +11,7 @@ class GraphCanvas(FigureCanvas):
         figure = plt.figure()
         super(GraphCanvas, self).__init__(figure)
 
-    def createGraph(self, datasetName):
+    def loadGraph(self, datasetName):
       self.figure.clf()
       g = Graph(datasetName)
       
