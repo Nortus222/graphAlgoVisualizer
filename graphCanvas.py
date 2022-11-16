@@ -34,14 +34,16 @@ class GraphCanvas(FigureCanvas):
       nx.draw_networkx(self.g, pos=self.g.pos, edgelist=[], with_labels=True)
       self.draw()
 
-    def addEdge(self, edge):
-      nx.draw_networkx_edges(self.g, pos=self.g.pos, edgelist=[edge])
-      print("here")
-      self.draw()
+    def reset(self, algo):
+        if (algo == "Kruskal's" or algo == "Prim's"):
+            self.drawIncomplete()
 
-    def mst(self):
-      mst = self.g.kruskals()
-      self.drawMST(mst=mst)
+    def mst(self, algo):
+        if (algo == "Kruskal's"):
+            mst = self.g.kruskals()
+        elif (algo == "Prim's"):
+            mst = self.g.prims()
+        self.drawMST(mst=mst)
 
     def drawMST(self, mst):
       self.figure.clf()
@@ -50,22 +52,20 @@ class GraphCanvas(FigureCanvas):
 
     def animEmpty(self):
       self.figure.clf()
-      nx.draw_networkx(self.g, pos=self.g.pos, edgelist=[], with_labels=True)
-      
-      
+      nx.draw_networkx(self.g, pos=self.g.pos, edgelist=[], node_size=100, with_labels=False)
 
     def animate(self, frame, mst):
-      print(frame)
       nx.draw_networkx_edges(self.g, pos=self.g.pos, edgelist=mst[0:frame])
-      
 
+    def visualize(self, algo):
+      if (algo == "Kruskal's"):
+            mst = self.g.kruskals()
+      elif (algo == "Prim's"):
+            mst = self.g.prims()
 
-    def visualizeMST(self):
-      # self.drawEmpty()
-      mst = self.g.kruskals()
-      anim = animation.FuncAnimation(self.figure, partial(self.animate, mst=mst), frames=len(mst)+1, interval=200, repeat=False, init_func=self.animEmpty)
-      # anim.save('animation_1.gif', writer='imagemagick')
+      _ = animation.FuncAnimation(self.figure, partial(self.animate, mst=mst), frames=len(mst)+1, interval=400, repeat=False, init_func=self.animEmpty)
       self.draw()
+
       
 
       

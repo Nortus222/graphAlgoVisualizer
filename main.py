@@ -7,6 +7,7 @@ from mainWindow import Ui_MainWindow
 from graphCanvas import GraphCanvas
 from utilities import *
 
+ALGORITHMS = ["Kruskal's", "Prim's", "Dijkstra's"]
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
@@ -23,6 +24,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton.clicked.connect(self.buttonClick)
         
         self.loadcbGraphSelection(self.dataSetsFolder)
+        self.loadcbAlgorithms()
 
     def cbGraphSelectionValueChanged(self, i):
         self.graphCanvas.loadGraph(self.cbGraphSelection.currentText())
@@ -34,10 +36,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cbGraphSelection.currentIndexChanged.connect(self.cbGraphSelectionValueChanged)
         self.cbGraphSelection.setCurrentText('statesCapitals')
 
-        
+    def cbAlgorirthmsValueChanged(self):
+        self.graphCanvas.reset(self.cboAlgo.currentText())
+
+    def loadcbAlgorithms(self):
+        self.cboAlgo.addItems(ALGORITHMS)
+        self.cboAlgo.currentIndexChanged.connect(self.cbAlgorirthmsValueChanged)
 
     def buttonClick(self):
-      self.graphCanvas.visualizeMST()
+        self.graphCanvas.visualize(self.cboAlgo.currentText())
+    #   self.graphCanvas.visualizeMST()
       
         
         

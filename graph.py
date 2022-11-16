@@ -16,6 +16,7 @@ class Graph(nx.Graph):
         self.pos = dataSet.nodePos
         self.edgesList = []
         self.edgesListIncomplete = []
+        self.adjMatrix = dataSet.adjMatrix
         
         # Get nodes list based on Adjacemcy Matrix -> (source, target, weight)
         n = len(self.pos)
@@ -82,6 +83,97 @@ class Graph(nx.Graph):
                 result.append((u, v, w))
                 self.union(root, rank, x, y)
   
+        return result
+
+    def printSolution(self, dist):
+        print("Vertex \t Distance from Source")
+        for node in range(self.number_of_nodes()):
+            print(node, "\t\t", dist[node])
+
+    def minDistance(self, dist, sptSet):
+ 
+        # Initialize minimum distance for next node
+        min = 1e7
+ 
+        # Search not nearest vertex not in the
+        # shortest path tree
+        for v in range(self.number_of_nodes()):
+            if dist[v] < min and sptSet[v] == False:
+                min = dist[v]
+                min_index = v
+ 
+        return min_index
+ 
+    # Function that implements Dijkstra's single source
+    # shortest path algorithm for a graph represented
+    # using adjacency matrix representation
+    def dijkstra(self, src):
+ 
+        dist = [1e7] * self.number_of_nodes()
+        dist[src] = 0
+        sptSet = [False] * self.number_of_nodes()
+ 
+        for _ in range(self.number_of_nodes()):
+ 
+            # Pick the minimum distance vertex from
+            # the set of vertices not yet processed.
+            # u is always equal to src in first iteration
+            u = self.minDistance(dist, sptSet)
+ 
+            # Put the minimum distance vertex in the
+            # shortest path tree
+            sptSet[u] = True
+ 
+            # Update dist value of the adjacent vertices
+            # of the picked vertex only if the current
+            # distance is greater than new distance and
+            # the vertex in not in the shortest path tree
+            for v in range(self.number_of_nodes()):
+                if (self.adjMatrix[u][v] > 0 and
+                   sptSet[v] == False and
+                   dist[v] > dist[u] + self.adjMatrix[u][v]):
+                    dist[v] = dist[u] + self.adjMatrix[u][v]
+ 
+        self.printSolution(dist)
+        print(dist)
+
+    # prim's algo, graph is represented as an v by v adjacency list
+    def prims(self):
+        # used to pick minimum weight edge
+        key = [1e7] * self.number_of_nodes()
+        # used to store MST
+        parent = [1e7] * self.number_of_nodes()
+        result = []
+        # pick a random vertex, ie 0
+        key[0] = 0
+        # create list for t/f if a node is connected to the MST
+        mstSet = [False] * self.number_of_nodes()
+          # set the first node to the root (ie have a parent of -1)
+        parent[0] = -1
+  
+        for _ in range(self.number_of_nodes()):
+            # 1) pick the minimum distance vertex from the current key
+            # from the set of points not yet in the MST
+            u = self.minDistance(key, mstSet)
+            # 2) add the new vertex to the MST
+            mstSet[u] = True
+  
+            # loop through the vertices to update the ones that are still
+            # not in the MST
+            for v in range(self.number_of_nodes()):
+                # if the edge from the newly added vertex (v) exists,
+                # the vertex hasn't been added to the MST, and
+                # the new vertex's distance to the graph is greater than the distance
+                # stored in the initial graph, update the "key" value to the
+                # distance initially given and update the parent of
+                # of the vertex (v) to the newly added vertex (u)
+                if self.adjMatrix[u][v] > 0 and mstSet[v] == False and key[v] > self.adjMatrix[u][v]:
+                    key[v] = self.adjMatrix[u][v]
+                    parent[v] = u
+                    
+        for i in range(1, self.number_of_nodes()):
+          result.append((i, parent[i], self.adjMatrix[i][parent[i]]))
+        
         return result
 
 
