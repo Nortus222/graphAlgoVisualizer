@@ -37,7 +37,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         
 
     def buttonClick(self):
-      pass
+      self.graphCanvas.visualizeMST()
       
         
         
