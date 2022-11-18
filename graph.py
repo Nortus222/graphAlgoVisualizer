@@ -85,15 +85,10 @@ class Graph(nx.Graph):
   
         return result
 
-    def printSolution(self, dist):
-        print("Vertex \t Distance from Source")
-        for node in range(self.number_of_nodes()):
-            print(node, "\t\t", dist[node])
-
     def minDistance(self, dist, sptSet):
  
         # Initialize minimum distance for next node
-        min = 1e7
+        min = INFINITY
  
         # Search not nearest vertex not in the
         # shortest path tree
@@ -103,46 +98,67 @@ class Graph(nx.Graph):
                 min_index = v
  
         return min_index
- 
-    # Function that implements Dijkstra's single source
-    # shortest path algorithm for a graph represented
-    # using adjacency matrix representation
-    def dijkstra(self, src):
- 
-        dist = [1e7] * self.number_of_nodes()
-        dist[src] = 0
-        sptSet = [False] * self.number_of_nodes()
- 
-        for _ in range(self.number_of_nodes()):
- 
-            # Pick the minimum distance vertex from
-            # the set of vertices not yet processed.
-            # u is always equal to src in first iteration
-            u = self.minDistance(dist, sptSet)
- 
-            # Put the minimum distance vertex in the
-            # shortest path tree
-            sptSet[u] = True
- 
-            # Update dist value of the adjacent vertices
-            # of the picked vertex only if the current
-            # distance is greater than new distance and
-            # the vertex in not in the shortest path tree
-            for v in range(self.number_of_nodes()):
-                if (self.adjMatrix[u][v] > 0 and
-                   sptSet[v] == False and
-                   dist[v] > dist[u] + self.adjMatrix[u][v]):
-                    dist[v] = dist[u] + self.adjMatrix[u][v]
- 
-        self.printSolution(dist)
-        print(dist)
+
+    def dijkstra(self,start_node,end_node):
+        print(self.edgesListIncomplete)
+        
+        #all nodes are initially unvisited
+        unvisited_nodes = list(self.nodes()._nodes.keys())
+
+        #create a dictionary of each node's distance from start node
+        # update each node's distance when a shorter path found
+        distance_from_start = {node: (0 if node == start_node else INFINITY)
+                               for node in self.nodes}
+
+        #initialize prev node, the dict that maps each node to the node it was visited from
+        #when the shortest path to it was found.
+        previous_node = {node: None for node in self.nodes}
+
+        fullPath = []
+        
+        while unvisited_nodes:
+            
+            #set current_node to the unvisited_node with shortest dist calculated
+            current_node = min(unvisited_nodes,key=lambda node: distance_from_start[node])
+            print(current_node)
+            unvisited_nodes.remove(current_node)
+
+            #if current_node's distance is INFINITY, the remaing unvisited nodes are not
+            # connected to start_node, done
+            if distance_from_start[current_node] == INFINITY:
+                break
+            
+            # Questionable        
+            if current_node == end_node:
+                break # we have visited the dest node, done here
+
+            #for each neighbor of current_node, check whether the total dist to the neighbor
+            #via current_node is shorter than the dist we currently have for that node.
+            # if it is , update the neighbor's values for distance_from_start and previous_node
+            for src, neighbor, distance in [edge for edge in self.edgesListIncomplete if edge[0] == current_node]:
+                new_path = distance_from_start[current_node] + distance
+                print((src, neighbor))
+                fullPath.append((src, neighbor))
+                if new_path < distance_from_start[neighbor]:
+                    distance_from_start[neighbor] = new_path
+                    previous_node[neighbor] = current_node
+
+        # iterate through the nodes from end_node back to start_node to generate the path
+        # use deque() because of performance O(1)
+        path = deque()
+        current_node = end_node
+        while previous_node[current_node] is not None:
+            path.appendleft((previous_node[current_node],current_node))
+            current_node = previous_node[current_node]
+        
+        return list(path), fullPath
 
     # prim's algo, graph is represented as an v by v adjacency list
     def prims(self):
         # used to pick minimum weight edge
-        key = [1e7] * self.number_of_nodes()
+        key = [INFINITY] * self.number_of_nodes()
         # used to store MST
-        parent = [1e7] * self.number_of_nodes()
+        parent = [INFINITY] * self.number_of_nodes()
         result = []
         # pick a random vertex, ie 0
         key[0] = 0
@@ -176,9 +192,41 @@ class Graph(nx.Graph):
         
         return result
 
+    def bellmanFord(self, src, end_node):
 
-if __name__ == "__main__":
-  g = Graph('statesCapitals')
-    
+        print(self.edgesListIncomplete)
 
+        # Step 1: fill the distance array and predecessor array
+        dist = [INFINITY] * self.number_of_nodes()
+        # Mark the source vertex
+        dist[src] = 0
 
+        #initialize prev node, the dict that maps each node to the node it was visited from
+        #when the shortest path to it was found.
+        previous_node = {node: None for node in self.nodes}
+
+        # Step 2: relax edges |V| - 1 times
+        for _ in range(self.number_of_nodes() - 1):
+            for s, d, w in self.edgesListIncomplete:
+                if dist[s] != INFINITY and dist[s] + w < dist[d]:
+                    dist[d] = dist[s] + w
+                    previous_node[d] = s
+
+        # Step 3: detect negative cycle
+        # if value changes then we have a negative cycle in the graph
+        # and we cannot find the shortest distances
+        for s, d, w in self.edgesListIncomplete:
+            if dist[s] != INFINITY and dist[s] + w < dist[d]:
+                print("Graph contains negative weight cycle")
+                return
+
+        # iterate through the nodes from end_node back to start_node to generate the path
+        # use deque() because of performance O(1)
+        path = deque()
+        current_node = end_node
+        while previous_node[current_node] is not None:
+            path.appendleft((previous_node[current_node],current_node))
+            current_node = previous_node[current_node]
+
+        return list(path), self.edgesListIncomplete
+        
